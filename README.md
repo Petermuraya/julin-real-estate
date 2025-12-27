@@ -262,4 +262,4 @@ IoT & Full-Stack Engineer
 Safaricom (IoT)
 Founder / Co-Founder — Akili Edge Solutions
 Coauthor test by ndungu-muraya <ndungu.muraya@s.karu.ac.ke>
-\nDocs: tweak intro sentence for clarity.
+\nDocs: fix small typo  clarify Getting Started section.
