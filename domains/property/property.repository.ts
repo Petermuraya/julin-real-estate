@@ -20,7 +20,10 @@ export async function getPublicProperties(filters?: {
   minPrice?: number;
   maxPrice?: number;
 }): Promise<Property[]> {
-  let query = supabaseBrowser.from("properties").select("*").eq("status", "available");
+  const isServer = typeof window === "undefined";
+  const client = isServer && supabaseServer ? supabaseServer : supabaseBrowser;
+
+  let query = client.from("properties").select("*").eq("status", "available");
 
   if (filters?.county) query = query.eq("county", filters.county);
   if (filters?.type) query = query.eq("property_type", filters.type);
@@ -42,7 +45,10 @@ export async function getPublicProperties(filters?: {
  *  - /properties/[slug]
  */
 export async function getPropertyBySlug(slug: string): Promise<Property> {
-  const { data, error } = await supabaseBrowser
+  const isServer = typeof window === "undefined";
+  const client = isServer && supabaseServer ? supabaseServer : supabaseBrowser;
+
+  const { data, error } = await client
     .from("properties")
     .select("*")
     .eq("slug", slug)
@@ -229,7 +235,11 @@ export async function getPropertiesPaginated(
     maxPrice?: number;
   }
 ) {
-  let query = supabaseBrowser
+  // Choose Supabase client: prefer server client when running on the server
+  const isServer = typeof window === "undefined";
+  const client = isServer && supabaseServer ? supabaseServer : supabaseBrowser;
+
+  let query = client
     .from("properties")
     .select("*")
     .eq("status", "available")
@@ -242,9 +252,27 @@ export async function getPropertiesPaginated(
   if (filters?.minPrice) query = query.gte("price", filters.minPrice);
   if (filters?.maxPrice) query = query.lte("price", filters.maxPrice);
 
-  const { data, error } = await query;
+  let data: any;
+  let error: any;
+  try {
+    const res = await query;
+    data = res.data;
+    error = res.error;
+  } catch (err: any) {
+    throw new Error(
+      `Supabase request failed (${isServer && supabaseServer ? "server" : "browser"} client): ${
+        err?.message || String(err)
+      }`
+    );
+  }
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(
+      `Supabase error (${isServer && supabaseServer ? "server" : "browser"} client): ${
+        error.message || JSON.stringify(error)
+      }`
+    );
+  }
 
   let nextCursor: string | null = null;
   if (data.length > limit) {
