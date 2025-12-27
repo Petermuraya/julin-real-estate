@@ -2,8 +2,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { getLatestProperties } from "@/domains/property/property.service";
 
+export const metadata = {
+  title: "Julin Real Estate — Land & Property in Kenya",
+  description:
+    "Find verified land and property listings across Kenya. Browse plots, compare prices, and contact sellers with confidence.",
+  openGraph: {
+    title: "Julin Real Estate — Land & Property in Kenya",
+    description:
+      "Find verified land and property listings across Kenya. Browse plots, compare prices, and contact sellers with confidence.",
+    images: ["/assets/og-default.jpg"],
+  },
+};
+
 export default async function HomePage() {
-  // 1️⃣ Fetch latest properties from Supabase
   const properties = await getLatestProperties(6);
 
   return (
@@ -13,9 +24,7 @@ export default async function HomePage() {
         <h1 className="text-4xl font-bold mb-4">
           Find Your Perfect Land or Property in Kenya
         </h1>
-        <p className="mb-6">
-          Browse land, houses, and commercial properties with ease.
-        </p>
+        <p className="mb-6">Browse land, houses, and commercial properties with ease.</p>
         <Link
           href="/properties"
           className="bg-white text-blue-600 px-6 py-3 rounded font-semibold"
@@ -34,7 +43,6 @@ export default async function HomePage() {
               key={property.id}
               className="border rounded overflow-hidden shadow hover:shadow-lg transition"
             >
-              {/* Display first image using next/image */}
               {property.images?.[0] ? (
                 <Image
                   src={property.images[0]}
@@ -43,23 +51,16 @@ export default async function HomePage() {
                   height={300}
                   className="w-full h-48 object-cover"
                   placeholder="blur"
-                  blurDataURL="/assets/placeholder.png" // optional placeholder
+                  blurDataURL="/assets/placeholder.png"
                 />
               ) : (
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  No Image
-                </div>
+                <div className="h-48 bg-gray-200 flex items-center justify-center">No Image</div>
               )}
               <div className="p-4">
                 <h3 className="font-bold">{property.title}</h3>
                 <p className="text-gray-500">{property.county}</p>
-                <p className="text-blue-600 font-semibold">
-                  KES {property.price.toLocaleString()}
-                </p>
-                <Link
-                  href={`/properties/${property.slug}`}
-                  className="text-sm text-blue-500 hover:underline"
-                >
+                <p className="text-blue-600 font-semibold">KES {property.price.toLocaleString()}</p>
+                <Link href={`/properties/${property.slug}`} className="text-sm text-blue-500 hover:underline">
                   View Details
                 </Link>
               </div>
