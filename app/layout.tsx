@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import "./globals.css";
 import PublicLayout from "@/ui/layouts/public.layout";
+import Providers from "@/ui/components/Providers";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("http://localhost:3000"), // change on production
@@ -29,7 +36,7 @@ export const metadata: Metadata = {
       "Explore verified land and property listings across Kenya. Buy plots and properties with confidence on Julin Real Estate.",
     images: [
       {
-        url: "/assets/og-default.jpg", // add later
+        url: "/assets/og-default.jpg",
         width: 1200,
         height: 630,
         alt: "Julin Real Estate - Land & Property in Kenya",
@@ -51,9 +58,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-KE">
+    <html lang="en-KE" className={`${inter.className} light`}>
       <body>
-        <PublicLayout>{children}</PublicLayout>
+        <Providers>
+          <PublicLayout>{children}</PublicLayout>
+        </Providers>
       </body>
     </html>
   );

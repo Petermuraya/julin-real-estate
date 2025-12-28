@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/ui/components/ui/toast";
 
 interface Props {
   propertyId: string;
 }
 
 export default function LeadForm({ propertyId }: Props) {
+  const toast = useToast();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -28,14 +30,16 @@ export default function LeadForm({ propertyId }: Props) {
       if (!res.ok) throw new Error("Failed to submit lead");
       setSuccess(true);
       setForm({ name: "", email: "", phone: "", message: "" });
+      toast.push({ message: "Inquiry submitted — we will contact you soon.", type: "success" });
     } catch (err) {
       console.error(err);
+      toast.push({ message: "Failed to submit inquiry", type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
-  if (success) return <p className="text-green-600">Your inquiry has been submitted!</p>;
+  if (success) return <p className="text-[var(--color-success)]">Your inquiry has been submitted!</p>;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded shadow">
@@ -73,7 +77,7 @@ export default function LeadForm({ propertyId }: Props) {
         placeholder="Your Message (optional)"
         className="w-full p-2 border rounded"
       />
-      <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded">
+      <button type="submit" disabled={loading} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded">
         {loading ? "Sending..." : "Submit Inquiry"}
       </button>
     </form>

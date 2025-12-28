@@ -11,13 +11,11 @@ import {
 } from "@/domains/property/property.service";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/infrastructure/auth/nextauth.config";
+import { isAdmin } from "@/domains/auth/role.guard";
+import { auth } from "next-auth";
 import { uploadImage } from "@/infrastructure/storage/cloudinary.client";
 
-/** Admin allowlist */
-const ADMIN_EMAILS = [
-  "sammypeter1944@gmail.com",
-  "juliusmurigi90@gmail.com",
-];
+/** Admin allowlist enforced via `isAdmin` guard */
 
 /** Payload types */
 interface CreatePropertyPayload {
@@ -54,8 +52,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(property);
     }
 
-    // Admin: fetch all properties
-    if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email)) {
+    // Admin: fetch all properties (server-side check)
+    if (session?.user?.email && isAdmin(session.user.email)) {
       const properties = await getAllPropertiesAdmin();
       return NextResponse.json(properties);
     }
@@ -84,10 +82,10 @@ export async function GET(req: NextRequest) {
 /** POST: Admin create property */
 /** ---------------------- */
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!ADMIN_EMAILS.includes(session.user.email))
+  if (!isAdmin(session.user.email))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = (await req.json()) as CreatePropertyPayload;
@@ -114,10 +112,10 @@ export async function POST(req: NextRequest) {
 /** PATCH: Admin update property */
 /** ---------------------- */
 export async function PATCH(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!ADMIN_EMAILS.includes(session.user.email))
+  if (!isAdmin(session.user.email))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = (await req.json()) as UpdatePropertyPayload;
@@ -148,10 +146,10 @@ export async function PATCH(req: NextRequest) {
 /** DELETE: Admin delete property */
 /** ---------------------- */
 export async function DELETE(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.email)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!ADMIN_EMAILS.includes(session.user.email))
+  if (!isAdmin(session.user.email))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { searchParams } = new URL(req.url);

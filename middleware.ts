@@ -1,48 +1,26 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { withAuth } from "next-auth/middleware";
+import { isAdmin } from "@/domains/auth/role.guard";
 
-const ADMIN_ROUTES = ['/admin'];
+export default withAuth({
+  callbacks: {
+    async authorized({ token, req }) {
+      const pathname = req.nextUrl.pathname;
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+      // Allow public & auth routes
+      if (pathname.startsWith("/login") || pathname.startsWith("/api/auth")) {
+        return true;
+      }
 
-  // Allow auth & internal Next.js routes
-  if (
-    pathname.startsWith('/api/auth') ||
-    pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico'
-  ) {
-    return NextResponse.next();
-  }
+      // Protect admin routes
+      if (pathname.startsWith("/admin")) {
+        return isAdmin((token as any)?.email as string);
+      }
 
-  // Protect admin routes
-  if (ADMIN_ROUTES.some((route) => pathname.startsWith(route))) {
-    const token = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+      return true;
+    },
+  },
+});
 
-    // Not authenticated
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
-
-    // Not an admin
-    if (
-      !token.email ||
-      !process.env.ADMIN_EMAILS?.split(',').includes(token.email)
-    ) {
-      return NextResponse.redirect(new URL('/', req.url));
-    }
-  }
-
-  return NextResponse.next();
-}
-
-/**
- * Middleware config MUST be top-level
- */
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ["/admin/:path*"],
 };

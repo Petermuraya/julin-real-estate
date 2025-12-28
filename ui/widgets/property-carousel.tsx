@@ -30,13 +30,15 @@ export default function PropertyCarousel({ images, alt }: Props) {
         <>
           <button
             onClick={prev}
-            className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded z-10"
+            style={{ backgroundColor: 'rgba(14,165,233,0.7)' }}
+            className="absolute top-1/2 left-2 transform -translate-y-1/2 text-white px-2 py-1 rounded z-10"
           >
             ‹
           </button>
           <button
             onClick={next}
-            className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded z-10"
+            style={{ backgroundColor: 'rgba(14,165,233,0.7)' }}
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 text-white px-2 py-1 rounded z-10"
           >
             ›
           </button>
@@ -48,9 +50,8 @@ export default function PropertyCarousel({ images, alt }: Props) {
           {images.map((_, idx) => (
             <span
               key={idx}
-              className={`w-2 h-2 rounded-full ${
-                idx === current ? "bg-white" : "bg-gray-400"
-              }`}
+              className={`w-2 h-2 rounded-full`}
+              style={{ backgroundColor: idx === current ? '#ffffff' : 'rgba(125,211,252,0.65)' }}
             />
           ))}
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useToast } from "@/ui/components/ui/toast";
 import { useParams, useRouter } from "next/navigation";
 import { propertySchema } from "@/domains/property/property.validation";
 
@@ -62,37 +63,38 @@ export default function EditPropertyPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update property");
-
+      toast.push({ message: "Property updated", type: "success" });
       router.push("/(admin)/properties");
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Unknown error occurred");
+      const msg = err instanceof Error ? err.message : "Unknown error occurred";
+      setError(msg);
+      toast.push({ message: msg, type: "error" });
     } finally {
       setSaving(false);
     }
   };
 
   if (loading) return <p className="p-6">Loading...</p>;
-  if (!form) return <p className="p-6 text-red-500">Not found</p>;
+  if (!form) return <p className="p-6 text-[var(--color-error)]">Not found</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Edit Property</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-[var(--color-error)] mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="title"
           value={form.title}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <textarea
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <input
@@ -100,14 +102,14 @@ export default function EditPropertyPage() {
           name="price"
           value={form.price}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <select
           name="status"
           value={form.status}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         >
           <option value="draft">Draft</option>
           <option value="available">Available</option>
@@ -118,7 +120,7 @@ export default function EditPropertyPage() {
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="btn btn-primary w-full justify-center disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>

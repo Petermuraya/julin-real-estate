@@ -34,3 +34,6 @@ export const supabaseServer: SupabaseClient | null =
   supabaseServiceRoleKey && supabaseServiceRoleKey.length
     ? createClient(supabaseUrl, supabaseServiceRoleKey)
     : null;
+
+// Public alias used by client-side services and RLS-protected operations
+export const supabase = supabaseBrowser;
