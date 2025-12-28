@@ -1,7 +1,7 @@
-import GoogleProvider from 'next-auth/providers/google';
-import { NextAuthOptions } from 'next-auth';
+import GoogleProvider from "next-auth/providers/google";
+import { NextAuthOptions } from "next-auth";
 
-const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || [];
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(",") || [];
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -11,13 +11,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login",
+    error: "/error",
+  },
   callbacks: {
     async session({ session }) {
-      // Add isAdmin flag based on email allowlist
       if (session.user && ADMIN_EMAILS.includes(session.user.email!)) {
-        session.user.isAdmin = true;
+        (session.user as any).isAdmin = true;
       } else {
-        session.user.isAdmin = false;
+        (session.user as any).isAdmin = false;
       }
       return session;
     },
