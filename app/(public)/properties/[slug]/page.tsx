@@ -1,5 +1,6 @@
 import Image from "next/image";
 import LeadForm from "@/ui/components/forms/lead-form";
+import PropertyCarousel from "@/ui/widgets/property-carousel";
 import { getPropertyBySlug } from "@/domains/property/property.repository";
 import type { Metadata } from "next";
 
@@ -52,37 +53,116 @@ export default async function PropertyDetailPage({ params }: { params: Params })
     },
   };
 
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <h1 className="text-3xl font-bold mb-4">{property.title}</h1>
+  const WHATSAPP = (property as any).whatsapp || process.env.NEXT_PUBLIC_WHATSAPP || "";
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          {property.images?.map((img, idx) => (
-            <div key={idx} className="relative w-full h-64 md:h-80">
-              <Image src={img} alt={`${property.title} image ${idx + 1}`} fill className="object-cover rounded shadow" />
+  return (
+    <div className="max-w-5xl mx-auto p-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <div className="space-y-6">
+        <div className="relative">
+          <PropertyCarousel images={property.images || []} alt={property.title} />
+
+          <div className="absolute top-4 left-4">
+            <span className="inline-block bg-[var(--color-primary)] text-white px-3 py-1 rounded-full text-sm font-semibold capitalize">
+              {property.type}
+            </span>
+          </div>
+
+          {property.status === "sold" && (
+            <div className="absolute top-4 right-4">
+              <span className="inline-block bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">Sold</span>
             </div>
-          ))}
+          )}
         </div>
 
-        <div className="space-y-4">
-          <p className="text-gray-700">{property.description}</p>
-          <p className="font-semibold">Price: KES {property.price.toLocaleString()}</p>
-          <p>County: {property.county}</p>
-          {property.town && <p>Town: {property.town}</p>}
-          <p>Area: {property.area}</p>
-          <p>Type: {property.type}</p>
+        <div className="md:flex md:items-start md:justify-between md:gap-6">
+          <div className="md:flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)]">{property.title}</h1>
+            <p className="text-[var(--color-muted)] mt-1">{property.town ? `${property.town}, ` : ""}{property.county}</p>
+            <p className="text-[var(--color-text)] font-bold text-xl mt-3">KES {property.price.toLocaleString()}</p>
+          </div>
 
+          <div className="mt-4 md:mt-0 md:w-72">
+            <div className="flex gap-2">
+              <a
+                href={WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi, I’m interested in ${property.title} (KES ${property.price.toLocaleString()})`)}` : `#`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary flex-1 text-center"
+              >
+                WhatsApp
+              </a>
+
+              <a href="#contact" className="flex-1 text-center border border-[var(--color-primary)] rounded px-3 py-2 text-[var(--color-primary)] font-semibold hover:bg-[var(--color-primary)] hover:text-white transition">
+                Contact
+              </a>
+            </div>
+
+            <div className="mt-3 text-sm text-[var(--color-muted)]">
+              <div>Area: {property.area || "—"}</div>
+              <div>Type: {property.type}</div>
+              <div>Posted: {new Date(property.created_at).toLocaleDateString()}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="bg-[var(--color-surface)] p-4 rounded-lg shadow">
+            <h2 className="font-semibold text-lg mb-2">Description</h2>
+            <p className="text-[var(--color-muted)]">{property.description}</p>
+          </div>
+
+          <div className="bg-[var(--color-surface)] p-4 rounded-lg shadow">
+            <h2 className="font-semibold text-lg mb-2">Details</h2>
+            <ul className="text-[var(--color-muted)] list-disc list-inside">
+              <li>County: {property.county}</li>
+              {property.town && <li>Town: {property.town}</li>}
+              <li>Area: {property.area || "—"}</li>
+              <li>Type: {property.type}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h2 className="font-semibold text-lg mb-2">Location</h2>
+          {property.coordinates ? (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${property.coordinates.lat},${property.coordinates.lng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full h-64 rounded-lg overflow-hidden shadow"
+            >
+              <iframe
+                src={`https://www.google.com/maps?q=${property.coordinates.lat},${property.coordinates.lng}&z=15&output=embed`}
+                className="w-full h-full border-0"
+                loading="lazy"
+                title="Property location"
+              />
+            </a>
+          ) : (
+            <div className="w-full h-64 rounded-lg bg-gray-100 flex items-center justify-center">Map not available</div>
+          )}
+        </div>
+
+        <div id="contact" className="mt-6 bg-[var(--color-surface)] p-4 rounded-lg shadow">
+          <h2 className="font-semibold text-lg mb-2">Contact Agent</h2>
           <LeadForm propertyId={property.id} />
+        </div>
+      </div>
 
+      {/* Mobile sticky CTA */}
+      <div className="md:hidden">
+        <div className="fixed bottom-4 left-4 right-4 flex gap-3 z-50">
           <a
-            href={`https://wa.me/254700471113?text=Hello, I am interested in property "${property.title}" (KES ${property.price.toLocaleString()})`}
+            href={WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi, I’m interested in ${property.title} (KES ${property.price.toLocaleString()})`)}` : `#`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="flex-1 text-center btn btn-primary rounded-full py-3"
           >
-            Contact via WhatsApp
+            WhatsApp
+          </a>
+          <a href="#contact" className="flex-1 text-center rounded-full border border-[var(--color-primary)] py-3 text-[var(--color-primary)] font-semibold">
+            Contact
           </a>
         </div>
       </div>
