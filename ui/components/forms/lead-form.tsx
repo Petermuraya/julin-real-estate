@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/ui/components/ui/toast";
 
 interface Props {
   propertyId: string;
 }
 
 export default function LeadForm({ propertyId }: Props) {
+  const toast = useToast();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -28,8 +30,10 @@ export default function LeadForm({ propertyId }: Props) {
       if (!res.ok) throw new Error("Failed to submit lead");
       setSuccess(true);
       setForm({ name: "", email: "", phone: "", message: "" });
+      toast.push({ message: "Inquiry submitted — we will contact you soon.", type: "success" });
     } catch (err) {
       console.error(err);
+      toast.push({ message: "Failed to submit inquiry", type: "error" });
     } finally {
       setLoading(false);
     }
