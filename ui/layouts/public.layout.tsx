@@ -12,12 +12,13 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
           <Link href="/" className="text-2xl font-bold">
             Julin Real Estate
           </Link>
-          <nav className="space-x-4">
+          <nav className="space-x-4 flex items-center">
             <Link href="/">Home</Link>
             <Link href="/properties">Properties</Link>
             <Link href="/blog">Blog</Link>
+            <Link href="/about" className="opacity-90 hover:opacity-100 transition-opacity">About</Link>
             <Link href="/contact">Contact</Link>
-            <Link href="/auth/login" className="bg-white text-blue-600 px-3 py-1 rounded">
+            <Link href="/login" className="bg-white text-blue-600 px-3 py-1 rounded">
               Login
             </Link>
           </nav>
