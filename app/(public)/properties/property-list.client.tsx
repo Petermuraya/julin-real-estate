@@ -1,19 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import PropertyFilters from "@/ui/components/forms/property-filters";
-
-interface Property {
-  id: string;
-  title: string;
-  slug?: string;
-  type?: string;
-  price: number;
-  county: string;
-  created_at?: string;
-  images?: string[];
-}
+import { Skeleton } from "@/ui/components/ui/skeleton";
+import PropertyCard from "@/ui/widgets/property-card";
+import type { Property } from "@/domains/property/property.model";
 
 interface Filters {
   county?: string;
@@ -76,25 +67,26 @@ export default function PropertyListClient({
     <div>
       <PropertyFilters onChange={(f) => fetchProperties(false, f)} />
 
-      {loading && <p className="p-6">Loading properties...</p>}
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="rounded overflow-hidden">
+              <Skeleton className="h-48 w-full rounded" />
+              <div className="p-4">
+                <Skeleton className="h-4 w-3/4 mb-2 rounded" />
+                <Skeleton className="h-3 w-1/2 mb-2 rounded" />
+                <Skeleton className="h-4 w-1/3 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {!loading && !properties.length && <p className="p-6">No properties available.</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((p) => (
-          <div key={p.id} className="border rounded overflow-hidden shadow hover:shadow-lg transition">
-            {p.images && p.images[0] ? (
-              <div className="relative w-full h-48">
-                <Image src={p.images[0]} alt={p.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 33vw" />
-              </div>
-            ) : (
-              <div className="h-48 bg-gray-200 flex items-center justify-center">No Image</div>
-            )}
-            <div className="p-4">
-              <h2 className="text-lg font-bold">{p.title}</h2>
-              <p className="text-gray-500">{p.county}</p>
-              <p className="text-blue-600 font-semibold">KES {p.price.toLocaleString()}</p>
-            </div>
-          </div>
+          <PropertyCard key={p.id} property={p} />
         ))}
       </div>
 
