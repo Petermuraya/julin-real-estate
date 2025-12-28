@@ -60,7 +60,7 @@ export default function AdminPropertiesPage() {
   };
 
   if (loading) return <p className="p-6">Loading properties...</p>;
-  if (error) return <p className="p-6 text-red-500">Error: {error}</p>;
+  if (error) return <p className="p-6 text-[var(--color-error)]">Error: {error}</p>;
   if (properties.length === 0) return <p className="p-6">No properties found.</p>;
 
   return (
@@ -70,7 +70,7 @@ export default function AdminPropertiesPage() {
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse border">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-[var(--color-surface)]">
               <th className="border p-2 text-left">Title</th>
               <th className="border p-2">Type</th>
               <th className="border p-2">County</th>
@@ -82,11 +82,11 @@ export default function AdminPropertiesPage() {
           </thead>
           <tbody>
             {properties.map(p => (
-              <tr key={p.id} className="hover:bg-gray-50">
+              <tr key={p.id}>
                 <td className="border p-2">
                   <a
                     href={`/(admin)/properties/${p.id}`}
-                    className="text-blue-600 underline"
+                    className="text-[var(--color-primary)] underline"
                   >
                     {p.title}
                   </a>
@@ -101,14 +101,14 @@ export default function AdminPropertiesPage() {
                 <td className="border p-2 flex gap-2">
                   <a
                     href={`/(admin)/properties/${p.id}`}
-                    className="text-white bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
+                    className="text-white bg-[var(--color-primary)] px-3 py-1 rounded hover:bg-[var(--color-primary-dark)]"
                   >
                     Edit
                   </a>
                   <button
                     onClick={() => handleDelete(p.id)}
                     disabled={deletingId === p.id}
-                    className="text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+                    className="text-white bg-[var(--color-error)] px-3 py-1 rounded hover:brightness-90"
                   >
                     {deletingId === p.id ? "Deleting..." : "Delete"}
                   </button>

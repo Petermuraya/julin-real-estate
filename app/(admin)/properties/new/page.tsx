@@ -34,14 +34,14 @@ export default function NewPropertyPage() {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+        className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
       />
       <input
         type="number"
         placeholder="Price"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
-        className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+        className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
       />
       <button type="submit" className="btn btn-primary px-4 py-2 w-full justify-center">
         Create

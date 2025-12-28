@@ -118,7 +118,7 @@ export default function BlogForm() {
           placeholder="Write your blog in Markdown..."
         />
         <input type="file" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />
-        <button onClick={handleUpload} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button onClick={handleUpload} className="bg-[var(--color-primary)] text-white px-4 py-2 rounded">
           Upload Cover
         </button>
         <label className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export default function BlogForm() {
           />
           Published
         </label>
-        <button onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded">
+        <button onClick={handleSubmit} className="bg-[var(--color-success)] text-white px-4 py-2 rounded">
           {editId ? "Update Blog" : "Create Blog"}
         </button>
       </div>

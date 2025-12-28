@@ -13,7 +13,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
   return (
     <article className="card rounded-lg overflow-hidden hover:shadow-lg transition-transform transform hover:scale-105">
-      <div className="relative w-full h-48 bg-gray-100">
+      <div className="relative w-full h-48 bg-[var(--color-surface)]">
         {property.images && property.images.length ? (
           <Image
             src={property.images[0]}
@@ -24,14 +24,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             priority={false}
           />
         ) : (
-          <div className="h-48 bg-gray-200 flex items-center justify-center text-gray-500">No image</div>
+          <div className="h-48 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)]">No image</div>
         )}
 
         <span className="absolute top-3 left-3 bg-[var(--color-primary)] text-white px-2 py-1 rounded text-xs font-semibold capitalize">
           {property.type}
         </span>
         {property.status === "sold" && (
-          <span className="absolute top-3 right-3 bg-gray-800 text-white px-2 py-1 rounded text-xs font-semibold">Sold</span>
+          <span className="absolute top-3 right-3 bg-[var(--color-error)] text-white px-2 py-1 rounded text-xs font-semibold">Sold</span>
         )}
       </div>
 

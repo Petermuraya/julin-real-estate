@@ -26,7 +26,7 @@ export default function PropertyFilters({ onChange }: Props) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-2 mb-4 p-2 bg-gray-100 rounded">
+    <div className="flex flex-col md:flex-row gap-2 mb-4 p-2 bg-[var(--color-surface)] rounded">
       <select name="county" value={filters.county} onChange={handleChange} className="p-2 border rounded">
         <option value="">All Counties</option>
         <option value="Nairobi">Nairobi</option>

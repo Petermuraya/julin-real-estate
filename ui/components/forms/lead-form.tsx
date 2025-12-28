@@ -39,7 +39,7 @@ export default function LeadForm({ propertyId }: Props) {
     }
   };
 
-  if (success) return <p className="text-green-600">Your inquiry has been submitted!</p>;
+  if (success) return <p className="text-[var(--color-success)]">Your inquiry has been submitted!</p>;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded shadow">
@@ -77,7 +77,7 @@ export default function LeadForm({ propertyId }: Props) {
         placeholder="Your Message (optional)"
         className="w-full p-2 border rounded"
       />
-      <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded">
+      <button type="submit" disabled={loading} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded">
         {loading ? "Sending..." : "Submit Inquiry"}
       </button>
     </form>

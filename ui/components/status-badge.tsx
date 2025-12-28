@@ -3,13 +3,13 @@
 import React from "react";
 
 export default function StatusBadge({ type, status }: { type?: string; status?: string }) {
-  const typeClass = type === "land" ? "bg-[var(--color-primary)] text-white" : "bg-gray-300 text-[var(--color-text)]";
+  const typeClass = type === "land" ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-text)]";
 
-  let statusClass = "bg-gray-200 text-[var(--color-text)]";
-  if (status === "available") statusClass = "bg-green-500 text-white";
-  if (status === "sold") statusClass = "bg-red-500 text-white";
-  if (status === "draft") statusClass = "bg-gray-400 text-white";
-  if ((status as any) === "reserved") statusClass = "bg-amber-500 text-white";
+  let statusClass = "bg-[var(--color-surface)] text-[var(--color-text)]";
+  if (status === "available") statusClass = "bg-[var(--color-success)] text-white";
+  if (status === "sold") statusClass = "bg-[var(--color-error)] text-white";
+  if (status === "draft") statusClass = "bg-[var(--color-muted)] text-white";
+  if ((status as any) === "reserved") statusClass = "bg-[var(--color-warning)] text-white";
 
   return (
     <div className="flex items-center gap-2">

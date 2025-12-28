@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PropertyListClient from "./property-list.client";
+import PropertyListClient from "../../../ui/components/property-list.client";
 import { getPropertiesPaginated } from "@/domains/property/property.repository";
 
 export const metadata: Metadata = {

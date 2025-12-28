@@ -105,7 +105,7 @@ export default function AddPropertyPage() {
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Add New Land</h1>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-[var(--color-error)] mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -113,7 +113,7 @@ export default function AddPropertyPage() {
           placeholder="Title"
           value={form.title}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -122,7 +122,7 @@ export default function AddPropertyPage() {
           placeholder="Slug"
           value={form.slug}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -131,7 +131,7 @@ export default function AddPropertyPage() {
           placeholder="Description"
           value={form.description}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -140,7 +140,7 @@ export default function AddPropertyPage() {
           placeholder="County"
           value={form.county}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -149,7 +149,7 @@ export default function AddPropertyPage() {
           placeholder="Town"
           value={form.town}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <input
@@ -157,7 +157,7 @@ export default function AddPropertyPage() {
           placeholder="Area / Plot size"
           value={form.area}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -167,7 +167,7 @@ export default function AddPropertyPage() {
           placeholder="Price (KES)"
           value={form.price}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
           required
         />
 
@@ -176,7 +176,7 @@ export default function AddPropertyPage() {
           accept="image/*"
           multiple
           onChange={handleFileChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+           className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         {/* Image previews */}

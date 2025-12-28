@@ -75,26 +75,26 @@ export default function EditPropertyPage() {
   };
 
   if (loading) return <p className="p-6">Loading...</p>;
-  if (!form) return <p className="p-6 text-red-500">Not found</p>;
+  if (!form) return <p className="p-6 text-[var(--color-error)]">Not found</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Edit Property</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-[var(--color-error)] mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="title"
           value={form.title}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <textarea
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <input
@@ -102,14 +102,14 @@ export default function EditPropertyPage() {
           name="price"
           value={form.price}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         />
 
         <select
           name="status"
           value={form.status}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
+          className="w-full px-3 py-2 rounded-md border border-[var(--color-surface)] focus:border-[var(--color-primary-light)] focus:shadow-sm"
         >
           <option value="draft">Draft</option>
           <option value="available">Available</option>

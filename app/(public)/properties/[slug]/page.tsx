@@ -29,7 +29,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
   const property = await getPropertyBySlug(params.slug);
 
   if (!property) {
-    return <p className="p-6 text-red-500">Property not found.</p>;
+    return <p className="p-6 text-[var(--color-error)]">Property not found.</p>;
   }
 
   const jsonLd = {
@@ -70,7 +70,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
 
           {property.status === "sold" && (
             <div className="absolute top-4 right-4">
-              <span className="inline-block bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">Sold</span>
+              <span className="inline-block bg-[var(--color-error)] text-white px-3 py-1 rounded-full text-sm font-semibold">Sold</span>
             </div>
           )}
         </div>
@@ -139,8 +139,8 @@ export default async function PropertyDetailPage({ params }: { params: Params })
                 title="Property location"
               />
             </a>
-          ) : (
-            <div className="w-full h-64 rounded-lg bg-gray-100 flex items-center justify-center">Map not available</div>
+            ) : (
+            <div className="w-full h-64 rounded-lg bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)]">Map not available</div>
           )}
         </div>
 

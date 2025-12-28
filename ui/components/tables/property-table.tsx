@@ -34,7 +34,7 @@ export default function PropertyTable({ properties, onEdit, onDelete, isLoading 
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-auto">
+    <div className="bg-[var(--color-surface)] rounded-lg shadow overflow-auto">
       <table className="min-w-full table-auto">
         <thead>
           <tr className="text-left border-b">
@@ -59,7 +59,7 @@ export default function PropertyTable({ properties, onEdit, onDelete, isLoading 
                 </tr>
               ))
             : properties.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50">
+                <tr key={p.id}>
                   <td className="px-4 py-3">{p.title}</td>
                   <td className="px-4 py-3"><span className="capitalize">{p.type}</span></td>
                   <td className="px-4 py-3">{p.county}</td>
@@ -68,7 +68,7 @@ export default function PropertyTable({ properties, onEdit, onDelete, isLoading 
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button onClick={() => onEdit?.(p)} className="px-2 py-1 rounded border text-sm">Edit</button>
-                      <button onClick={() => handleDelete(p)} className="px-2 py-1 rounded border text-sm text-red-600">Delete</button>
+                      <button onClick={() => handleDelete(p)} className="px-2 py-1 rounded border text-sm text-[var(--color-error)]">Delete</button>
                       <a href={`/properties/${p.slug}`} target="_blank" rel="noreferrer" className="px-2 py-1 rounded border text-sm">View</a>
                     </div>
                   </td>
