@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getLatestProperties } from "@/domains/property/property.service";
 
+const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP || "";
+
 export const metadata = {
   title: "Julin Real Estate — Land & Property in Kenya",
   description:
@@ -20,17 +22,43 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="bg-blue-600 text-white p-12 rounded-lg text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          Find Your Perfect Land or Property in Kenya
-        </h1>
-        <p className="mb-6">Browse land, houses, and commercial properties with ease.</p>
-        <Link
-          href="/properties"
-          className="bg-white text-blue-600 px-6 py-3 rounded font-semibold"
-        >
-          Browse Listings
-        </Link>
+      <section
+        className="text-white p-10 rounded-lg overflow-hidden"
+        style={{ background: "var(--color-primary-gradient)" }}
+      >
+        <div className="max-w-5xl mx-auto text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-[var(--color-background)]">
+            Find Your Perfect Land
+          </h1>
+          <p className="text-[var(--color-muted)] mb-6">
+            Julin Real Estate — trusted property deals across Kenya
+          </p>
+
+          {/* Search / Quick filters (GET to properties) */}
+          <form method="get" action="/properties" className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 items-center">
+            <input
+              name="q"
+              type="search"
+              placeholder="Search by county, town, or keyword"
+              className="flex-1 w-full px-4 py-3 rounded-lg border border-transparent focus:border-[var(--color-primary-light)] focus:shadow-sm"
+            />
+            <button className="px-6 py-3 rounded-lg font-semibold text-white bg-[var(--color-primary-gradient)] hover:opacity-95 transition">
+              Explore Listings
+            </button>
+            <Link href="/contact" className="px-6 py-3 rounded-lg font-semibold text-[var(--color-primary)] border border-[var(--color-primary)] bg-white/10 hover:bg-[var(--color-primary)] hover:text-white transition">
+              Contact Us
+            </Link>
+          </form>
+
+          {/* Trust cues */}
+          <div className="mt-6 flex justify-center gap-6 text-sm text-[var(--color-background)]/90">
+            <span>Verified Listings</span>
+            <span>&middot;</span>
+            <span>Transparent Pricing</span>
+            <span>&middot;</span>
+            <span>Secure Transactions</span>
+          </div>
+        </div>
       </section>
 
       {/* Featured Properties */}
@@ -68,6 +96,18 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Floating WhatsApp CTA (visible when NEXT_PUBLIC_WHATSAPP is set) */}
+      {WHATSAPP && (
+        <a
+          href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi%2C%20I%27m%20interested%20in%20your%20properties")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-4 right-4 bg-[var(--color-primary-gradient)] text-white px-4 py-3 rounded-full shadow-lg hover:scale-105 transition z-50"
+        >
+          WhatsApp
+        </a>
+      )}
     </div>
   );
 }
