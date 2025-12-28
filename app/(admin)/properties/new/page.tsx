@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/ui/components/ui/toast";
 
 export default function NewPropertyPage() {
   const router = useRouter();
+  const toast = useToast();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
 
@@ -18,9 +20,10 @@ export default function NewPropertyPage() {
     });
 
     if (res.ok) {
+      toast.push({ message: "Property created", type: "success" });
       router.push("/admin/properties");
     } else {
-      alert("Error creating property");
+      toast.push({ message: "Error creating property", type: "error" });
     }
   }
 
@@ -31,16 +34,16 @@ export default function NewPropertyPage() {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="border p-2 w-full"
+        className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
       />
       <input
         type="number"
         placeholder="Price"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
-        className="border p-2 w-full"
+        className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[var(--color-primary-light)] focus:shadow-sm"
       />
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <button type="submit" className="btn btn-primary px-4 py-2 w-full justify-center">
         Create
       </button>
     </form>
