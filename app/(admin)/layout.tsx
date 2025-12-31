@@ -2,9 +2,31 @@
 
 import React from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [collapsed, setCollapsed] = React.useState(false);
+
+  if (status === "loading") return <div>Loading...</div>;
+
+  if (!session || !session.user || !session.user.email) {
+    router.push("/login");
+    return null;
+  }
+
+  // Client-side allowlist check (UI hint only)
+  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (!ADMIN_EMAILS.includes(session.user.email)) {
+    router.push("/login");
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-[var(--color-surface)] text-[var(--color-text)]">
@@ -24,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/(admin)/admin/settings" className="px-2 py-2 rounded hover:bg-[var(--color-primary-light)]/20 transition">Settings</Link>
         </nav>
 
-        <div className="mt-auto text-sm text-white/80">Signed in as Admin</div>
+        <div className="mt-auto text-sm text-white/80">Signed in as {session.user.email}</div>
       </aside>
 
       <main className="flex-1 overflow-y-auto">
@@ -43,33 +65,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </main>
     </div>
   );
-}
-"use client";
-
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === "loading") return <div>Loading...</div>;
-
-  if (!session || !session.user || !session.user.email) {
-    router.push("/login");
-    return null;
-  }
-
-  // Client-side allowlist check (UI hint only)
-  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  if (!ADMIN_EMAILS.includes(session.user.email)) {
-    router.push("/login");
-    return null;
-  }
-
-  return <div className="min-h-screen flex flex-col">{children}</div>;
 }
