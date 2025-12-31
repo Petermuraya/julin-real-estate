@@ -1,5 +1,9 @@
+// domains/property/property.validation.ts
 import { z } from "zod";
 
+/* =====================================================
+   ENUMS
+   ===================================================== */
 export const propertyTypeEnum = z.enum([
   "land",
   "house",
@@ -16,9 +20,9 @@ export const propertyStatusEnum = z.enum([
   "draft",
 ]);
 
-/**
- * Base property schema
- */
+/* =====================================================
+   BASE PROPERTY SCHEMA
+   ===================================================== */
 export const propertySchema = z.object({
   title: z.string().min(5, "Title is too short"),
   description: z.string().min(20, "Description is too short"),
@@ -50,12 +54,34 @@ export const propertySchema = z.object({
   is_featured: z.boolean().default(false),
 });
 
-/**
- * Admin create payload
- */
+/* =====================================================
+   CREATE & UPDATE SCHEMAS
+   ===================================================== */
 export const createPropertySchema = propertySchema;
-
-/**
- * Admin update payload
- */
 export const updatePropertySchema = propertySchema.partial();
+
+/* =====================================================
+   STATUS TRANSITION VALIDATION
+   ===================================================== */
+export function validateStatusTransition(
+  current: z.infer<typeof propertyStatusEnum>,
+  next: z.infer<typeof propertyStatusEnum>
+) {
+  const allowedTransitions: Record<string, string[]> = {
+    draft: ["available", "reserved"],
+    available: ["sold", "reserved"],
+    reserved: ["available", "sold"],
+    sold: [],
+  };
+
+  if (!allowedTransitions[current].includes(next)) {
+    throw new Error(`Invalid status transition: ${current} → ${next}`);
+  }
+}
+
+/* =====================================================
+   RUNTIME VALIDATION UTILITY
+   ===================================================== */
+export function validatePropertyInput(input: unknown) {
+  return createPropertySchema.parse(input);
+}
