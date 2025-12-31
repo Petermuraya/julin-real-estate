@@ -24,15 +24,18 @@ function required(name: string, value?: string) {
  * MUST be prefixed with NEXT_PUBLIC_
  */
 export const publicEnv = {
-  SUPABASE_URL: required(
-    "NEXT_PUBLIC_SUPABASE_URL",
-    process.env.NEXT_PUBLIC_SUPABASE_URL
-  ),
+  SUPABASE_URL: required("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL),
 
-  SUPABASE_ANON_KEY: required(
-    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ),
+  // Accept either the common "anon" env name or the "publishable" alias used in some setups
+  SUPABASE_ANON_KEY: ((): string => {
+    const val = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    if (!val) {
+      throw new Error(
+        "❌ Missing required environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+      );
+    }
+    return val;
+  })(),
 
   DOMAIN: required(
     "NEXT_PUBLIC_DOMAIN",
