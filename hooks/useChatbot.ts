@@ -10,7 +10,7 @@ export type ChatMessage = {
   timestamp: number;
 };
 
-export function useChatbot(apiEndpoint: string = `${publicEnv.NEXT_PUBLIC_API_DOMAIN}/chatbot`) {
+export function useChatbot(apiEndpoint: string = `${publicEnv.API_DOMAIN}/chatbot`) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +43,12 @@ export function useChatbot(apiEndpoint: string = `${publicEnv.NEXT_PUBLIC_API_DO
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, botMessage]);
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unknown error");
+      }
     } finally {
       setLoading(false);
     }
