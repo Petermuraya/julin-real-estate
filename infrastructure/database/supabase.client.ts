@@ -11,8 +11,8 @@ import { publicEnv } from "@/config/env";
  * - Fully governed by Supabase RLS
  */
 export const supabasePublic: SupabaseClient = createClient(
-  publicEnv.supabase.url,
-  publicEnv.supabase.anonKey,
+  publicEnv.SUPABASE_URL,
+  publicEnv.SUPABASE_ANON_KEY,
   {
     auth: {
       persistSession: false,
@@ -47,7 +47,7 @@ export const supabaseAdmin: SupabaseClient = (() => {
     );
   }
 
-  return createClient(publicEnv.supabase.url, serviceRoleKey, {
+  return createClient(publicEnv.SUPABASE_URL, serviceRoleKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
