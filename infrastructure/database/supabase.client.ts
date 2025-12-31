@@ -1,39 +1,56 @@
+// infrastructure/database/supabase.client.ts
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl) {
-  throw new Error("Missing environment variable NEXT_PUBLIC_SUPABASE_URL");
-}
-
-if (!supabaseAnonKey) {
-  throw new Error(
-    "Missing environment variable NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
-  );
-}
+import { publicEnv } from "@/config/env";
 
 /**
- * Browser-safe client (PUBLIC READS ONLY)
+ * ------------------------------------------------------------
+ * PUBLIC SUPABASE CLIENT
+ * ------------------------------------------------------------
+ * - Safe for browser and server usage
+ * - Uses ANON (publishable) key
+ * - Fully governed by Supabase RLS
  */
-export const supabaseBrowser: SupabaseClient = createClient(
-  supabaseUrl,
-  supabaseAnonKey
+export const supabasePublic: SupabaseClient = createClient(
+  publicEnv.supabase.url,
+  publicEnv.supabase.anonKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  }
 );
 
 /**
- * Server-side admin client (FULL ACCESS)
- * ⚠️ NEVER expose this to the browser
- * If the service role key is not provided we'll export `null` so callers
- * can guard against missing admin access.
+ * Alias for convenience in read-only or RLS-protected operations
  */
-export const supabaseServer: SupabaseClient | null =
-  supabaseServiceRoleKey && supabaseServiceRoleKey.length
-    ? createClient(supabaseUrl, supabaseServiceRoleKey)
-    : null;
+export const supabase = supabasePublic;
 
-// Public alias used by client-side services and RLS-protected operations
-export const supabase = supabaseBrowser;
+/**
+ * ------------------------------------------------------------
+ * SERVER-ONLY ADMIN SUPABASE CLIENT
+ * ------------------------------------------------------------
+ * - Uses SERVICE ROLE key
+ * - Full database access (bypasses RLS)
+ * - MUST NEVER be imported into client components
+ */
+export const supabaseAdmin: SupabaseClient = (() => {
+  if (typeof window !== "undefined") {
+    throw new Error("❌ Supabase admin client cannot run in the browser");
+  }
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    throw new Error(
+      "❌ Missing SUPABASE_SERVICE_ROLE_KEY for admin Supabase access"
+    );
+  }
+
+  return createClient(publicEnv.supabase.url, serviceRoleKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+})();
