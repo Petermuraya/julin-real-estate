@@ -38,6 +38,11 @@ export const publicEnv = {
     "NEXT_PUBLIC_DOMAIN",
     process.env.NEXT_PUBLIC_DOMAIN
   ),
+
+  API_DOMAIN: required(
+    "NEXT_PUBLIC_API_DOMAIN",
+    process.env.NEXT_PUBLIC_API_DOMAIN
+  ),
 };
 
 /**
