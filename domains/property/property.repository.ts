@@ -126,8 +126,21 @@ export async function getPropertiesPaginated(
   if (filters?.minPrice) query = query.gte("price", filters.minPrice);
   if (filters?.maxPrice) query = query.lte("price", filters.maxPrice);
 
-  const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  let data: any;
+  let error: any;
+  try {
+    const res = await query;
+    data = res.data;
+    error = res.error;
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Supabase request failed: ${msg}`);
+  }
+
+  if (error) {
+    const message = error?.message || JSON.stringify(error);
+    throw new Error(`Supabase returned an error: ${message}`);
+  }
 
   const results = data as Property[];
   let nextCursor: string | null = null;
