@@ -2,8 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import Hero from "@/ui/components/Hero";
 import PropertyCard from "@/ui/widgets/property-card";
+import BlogCard from "@/ui/widgets/blog-card";
 import type { Property } from "@/domains/property/property.model";
 import { getLatestProperties } from "@/domains/property/property.service";
+import { publicBlogService } from "@/domains/blog/blog.repository";
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP || "";
 
@@ -21,40 +23,48 @@ export const metadata = {
 
 export default async function HomePage() {
   const properties = await getLatestProperties(6);
+  let posts = [] as any[];
+  try {
+    posts = await publicBlogService.getAll();
+  } catch (err) {
+    // ignore; blog service may be unavailable in dev
+    posts = [];
+  }
 
   return (
     <div className="space-y-12">
       <Hero whatsapp={WHATSAPP} />
 
-      {/* Featured Listings (UI-only placeholders) */}
+      {/* Featured Listings */}
       <section aria-labelledby="featured-listings-heading" className="mt-8 border-t border-white/5 pt-8">
-        <div className="max-w-5xl mx-auto">
-          <h2 id="featured-listings-heading" className="text-2xl font-bold mb-4">Featured Listings</h2>
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 id="featured-listings-heading" className="text-2xl font-bold">Featured Listings</h2>
+            <Link href="/properties" className="text-sm text-[var(--color-primary)] hover:underline">View all</Link>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(function renderPlaceholders() {
-              const samples: Property[] = Array.from({ length: 6 }).map((_, idx) => ({
-                id: `sample-${idx + 1}`,
-                slug: `sample-${idx + 1}`,
-                title: `Sample Plot ${idx + 1}`,
-                description: `Sample description for plot ${idx + 1}`,
-                type: "land",
-                status: "available",
-                price: 1200000 + idx * 50000,
-                currency: "KES",
-                county: "Nairobi",
-                town: "Kikuyu",
-                area: "1 acre",
-                images: [],
-                is_featured: true,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              }));
-
-              return samples.map((p) => (
-                <PropertyCard key={p.id} property={p} />
-              ));
-            })()}
+            {properties.length === 0
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <PropertyCard key={`ph-${i}`} property={{
+                    id: `ph-${i}`,
+                    slug: `ph-${i}`,
+                    title: `Sample Plot ${i + 1}`,
+                    description: "",
+                    type: "land",
+                    status: "available",
+                    price: 0,
+                    currency: "KES",
+                    county: "",
+                    town: "",
+                    area: "",
+                    images: [],
+                    is_featured: false,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                  } as Property} />
+                ))
+              : properties.map((p) => <PropertyCard key={p.id} property={p} />)}
           </div>
         </div>
       </section>
@@ -124,39 +134,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Properties */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Featured Properties</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.length === 0 && <p>No properties available yet.</p>}
-          {properties.map((property) => (
-            <div
-              key={property.id}
-              className="border rounded overflow-hidden shadow hover:shadow-lg transition"
-            >
-              {property.images?.[0] ? (
-                <Image
-                  src={property.images[0]}
-                  alt={property.title}
-                  width={400}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                  placeholder="blur"
-                  blurDataURL="/assets/placeholder.png"
-                />
-              ) : (
-                <div className="h-48 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)]">No Image</div>
-              )}
-              <div className="p-4">
-                <h3 className="font-bold">{property.title}</h3>
-                <p className="text-[var(--color-muted)]">{property.county}</p>
-                <p className="text-[var(--color-primary-dark)] font-semibold">KES {property.price.toLocaleString()}</p>
-                <Link href={`/properties/${property.slug}`} className="text-sm text-[var(--color-primary)] hover:underline">
-                  View Details
-                </Link>
-              </div>
-            </div>
-          ))}
+      {/* Blog preview */}
+      <section className="mt-12">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold">From the blog</h2>
+            <Link href="/blog" className="text-sm text-[var(--color-primary)] hover:underline">View blog</Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts && posts.length > 0 ? (
+              posts.slice(0, 3).map((post) => <BlogCard key={post.id} post={post} />)
+            ) : (
+              <p className="text-[var(--color-muted)]">No blog posts available.</p>
+            )}
+          </div>
         </div>
       </section>
 
