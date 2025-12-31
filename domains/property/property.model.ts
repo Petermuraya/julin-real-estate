@@ -1,3 +1,11 @@
+// domains/property/property.model.ts
+/**
+ * Core Property domain model
+ * - Land-first (Kenyan real estate)
+ * - Extensible to vehicles & other assets
+ * - UI, API, and DB agnostic
+ */
+
 export type PropertyType =
   | "land"
   | "house"
@@ -7,36 +15,56 @@ export type PropertyType =
   | "other";
 
 export type PropertyStatus =
+  | "draft"
   | "available"
-  | "sold"
   | "reserved"
-  | "draft";
+  | "sold";
+
+export type Currency = "KES";
+
+export interface GeoCoordinates {
+  lat: number;
+  lng: number;
+}
 
 export interface Property {
+  /** Identifiers */
   id: string;
   slug: string;
 
+  /** Core content */
   title: string;
   description: string;
 
+  /** Classification */
   type: PropertyType;
   status: PropertyStatus;
 
+  /** Pricing */
   price: number;
-  currency: "KES";
+  currency: Currency;
 
+  /**
+   * Location (Kenya-focused)
+   * - county is mandatory
+   * - others optional for flexibility
+   */
   county: string;
   town?: string;
-  area?: string;          // e.g. “1/8 acre”, “50x100”
-  coordinates?: {
-    lat: number;
-    lng: number;
-  };
+  area?: string; // e.g. "1/8 acre", "50x100"
+  coordinates?: GeoCoordinates;
 
+  /** Media */
   images: string[];
 
-  is_featured: boolean;
+  /** Marketing */
+  isFeatured: boolean;
 
-  created_at: string;
-  updated_at: string;
+  /** SEO */
+  metaTitle?: string;
+  metaDescription?: string;
+
+  /** Audit */
+  createdAt: string;
+  updatedAt: string;
 }
