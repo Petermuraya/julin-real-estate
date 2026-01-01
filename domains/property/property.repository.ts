@@ -24,7 +24,54 @@ interface PropertyFilters {
 export async function getPublicProperties(filters?: PropertyFilters): Promise<Property[]> {
   // Use the server-side admin client when running on the server (safe),
   // otherwise use the public (RLS) client for browser requests.
-  const client = isServer ? supabaseAdmin : supabasePublic;
+    // Prefer the server admin client when running on the server and a service key is available.
+    // If the admin client fails with an 'Invalid API key' error, retry with the public client.
+    const canUseAdmin = typeof process !== "undefined" && typeof window === "undefined" && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    const buildQuery = (client: any) =>
+      client
+        .from("properties")
+        .select("*")
+        .eq("status", "available")
+        .order("created_at", { ascending: false })
+        .limit(limit + 1);
+
+    let data: any;
+    let error: any;
+
+    if (canUseAdmin) {
+      try {
+        const res = await buildQuery(supabaseAdmin);
+        data = res.data;
+        error = res.error;
+        // If Supabase responds with an invalid key, fall back to public client
+        if (error && /invalid api key/i.test(String(error.message || ""))) {
+          const fallback = await buildQuery(supabasePublic);
+          data = fallback.data;
+          error = fallback.error;
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        // Try public client as a last resort
+        try {
+          const res = await buildQuery(supabasePublic);
+          data = res.data;
+          error = res.error;
+        } catch (err2: unknown) {
+          const msg2 = err2 instanceof Error ? err2.message : String(err2);
+          throw new Error(`Supabase request failed (admin then public): ${msg}; ${msg2}`);
+        }
+      }
+    } else {
+      try {
+        const res = await buildQuery(supabasePublic);
+        data = res.data;
+        error = res.error;
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        throw new Error(`Supabase request failed: ${msg}`);
+      }
+    }
 
   let query = client.from("properties").select("*").eq("status", "available");
 
@@ -131,19 +178,10 @@ export async function getPropertiesPaginated(
 
   let data: any;
   let error: any;
-  try {
-    const res = await query;
-    data = res.data;
-    error = res.error;
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    throw new Error(`Supabase request failed: ${msg}`);
-  }
-
-  if (error) {
-    const message = error?.message || JSON.stringify(error);
-    throw new Error(`Supabase returned an error: ${message}`);
-  }
+    if (error) {
+      const message = error?.message || JSON.stringify(error);
+      throw new Error(`Supabase returned an error: ${message}`);
+    }
 
   const results = data as Property[];
   let nextCursor: string | null = null;
