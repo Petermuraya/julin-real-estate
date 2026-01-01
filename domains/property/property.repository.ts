@@ -8,6 +8,7 @@
  */
 
 import { supabasePublic, supabaseAdmin } from "@/infrastructure/database/supabase.client";
+import { isServer } from "@/config/env";
 import { Property } from "./property.model";
 
 interface PropertyFilters {
@@ -21,7 +22,9 @@ interface PropertyFilters {
    PUBLIC QUERIES (Browser-safe, RLS enforced)
    ===================================================== */
 export async function getPublicProperties(filters?: PropertyFilters): Promise<Property[]> {
-  const client = supabasePublic;
+  // Use the server-side admin client when running on the server (safe),
+  // otherwise use the public (RLS) client for browser requests.
+  const client = isServer ? supabaseAdmin : supabasePublic;
 
   let query = client.from("properties").select("*").eq("status", "available");
 
