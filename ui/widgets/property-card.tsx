@@ -24,7 +24,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             priority={false}
           />
         ) : (
-          <div className="h-48 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)]">No image</div>
+          <Image
+            src="/assets/og/property-placeholder.png"
+            alt={property.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={false}
+          />
         )}
 
         <span className="absolute top-3 left-3 bg-[var(--color-primary)] text-white px-2 py-1 rounded text-xs font-semibold capitalize">

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ReactNode, useState } from "react";
 
 type NavLink = { href: string; label: string };
@@ -35,8 +36,9 @@ export default function NavbarComponent({
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
 					<div className="flex items-center gap-8">
-						<Link href="/" className={`text-xl sm:text-2xl font-bold leading-none transition-colors ${scrolled ? 'text-[var(--color-primary)]' : 'text-white'}`}>
-							{logo}
+						<Link href="/" className={`flex items-center gap-3 text-xl sm:text-2xl font-bold leading-none transition-colors ${scrolled ? 'text-[var(--color-primary)]' : 'text-white'}`}>
+							<Image src="/logos/logo.png" alt="Julin Real Estate" width={36} height={36} />
+							<span className="hidden sm:inline">Julin Real Estate</span>
 						</Link>
 
 						<nav className="hidden md:flex items-center gap-8 text-sm font-medium" aria-label="Primary">

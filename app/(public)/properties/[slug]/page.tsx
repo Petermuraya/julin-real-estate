@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       openGraph: {
         title: `${property.title} — Julin Real Estate`,
         description: `${property.title} — ${property.county}. Price: KES ${property.price.toLocaleString()}.`,
-        images: property.images && property.images.length ? [property.images[0]] : ["/assets/og-default.jpg"],
+        images: property.images && property.images.length ? [property.images[0]] : ["/assets/og/property-placeholder.png"],
       },
     };
   } catch (err) {
@@ -44,7 +44,7 @@ export default async function PropertyDetailPage({ params }: { params: Params })
       addressRegion: property.county,
       addressCountry: "KE",
     },
-    image: property.images && property.images.length ? property.images : ["/assets/og-default.jpg"],
+    image: property.images && property.images.length ? property.images : ["/assets/og/property-placeholder.png"],
     offers: {
       "@type": "Offer",
       priceCurrency: "KES",

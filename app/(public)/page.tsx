@@ -17,7 +17,7 @@ export const metadata = {
     title: "Julin Real Estate — Land & Property in Kenya",
     description:
       "Find verified land and property listings across Kenya. Browse plots, compare prices, and contact sellers with confidence.",
-    images: ["/assets/og-default.jpg"],
+    images: ["/assets/og/property-placeholder.png"],
   },
 };
 

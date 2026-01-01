@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Properties — Julin Real Estate",
     description:
       "Browse properties and land listings across Kenya. Filter by county, price, and property type.",
-    images: ["/assets/og-default.jpg"],
+    images: ["/assets/og/property-placeholder.png"],
   },
 };
 
