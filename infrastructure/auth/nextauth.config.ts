@@ -14,8 +14,8 @@ import { serverEnv } from "@/config/env";
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: serverEnv.auth.googleClientId,
-      clientSecret: serverEnv.auth.googleClientSecret,
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
     }),
   ],
 
@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
-  secret: serverEnv.auth.nextAuthSecret,
+  secret: serverEnv.NEXTAUTH_SECRET,
 
   callbacks: {
     /**
@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
       if (user?.email) {
         const email = user.email.toLowerCase();
         token.email = email;
-        token.isAdmin = serverEnv.admin.emails.includes(email);
+        token.isAdmin = serverEnv.ADMIN_EMAILS.includes(email);
       }
       return token;
     },
